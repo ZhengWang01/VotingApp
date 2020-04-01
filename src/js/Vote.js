@@ -30,6 +30,7 @@ class Vote extends React.Component {
 
     this.castVote = this.castVote.bind(this)
     this.watchEvents = this.watchEvents.bind(this)
+    this.checkRecord();
   }
 
   componentDidMount() {
@@ -77,7 +78,16 @@ class Vote extends React.Component {
       
     )
     this.electionInstance.getRecord(this.state.account, {from: this.state.account}).then((result) => console.log('result is',result))
+  }
 
+  checkRecord() {
+    this.web3.eth.getCoinbase((err, account) => {
+      this.setState({ account })
+      this.election.deployed().then((electionInstance) => {
+        electionInstance.getRecord(this.state.account, {from: this.state.account}).then(
+          (result) => console.log('result is',result))
+        })
+      })
   }
 
   render() {
@@ -97,7 +107,8 @@ class Vote extends React.Component {
           }
           </div>
         </div>
-      </div>
+        <button onClick={this.checkRecord}>checkRecord</button>
+      </div>      
     )
   }
 }
